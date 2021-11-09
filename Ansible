@@ -1,0 +1,121 @@
+# Project- Ansible
+Bare Metal Cloud Ansible Collection
+Ansible collection of modules for interacting with the Bare Metal Cloud API. This collection contains the server module which allows you to automate Bare Metal Cloud server provisioning and management.
+
+Bare Metal Cloud • Ansible Galaxy • Developers Portal • Knowledge Base • Support
+
+Requirements
+Bare Metal Cloud account
+Ansible 2.9+
+Python 2 (version 2.7) or Python 3 (versions 3.5 and higher)
+Python requests package
+Creating a Bare Metal Cloud account
+Go to the Bare Metal Cloud signup page.
+Follow the prompts to set up your account.
+Use your credentials to log in to Bare Metal Cloud portal.
+▶️ Video tutorial: How to Create a Bare Metal Cloud Account
+
+▶️ Video tutorial: Introduction to Bare Metal Cloud
+
+Installing Ansible
+Follow these helpful tutorials to learn how to install Ansible on Ubuntu and Windows machines.
+
+How to Install and Configure Ansible on Ubuntu 20.04
+How to Install and Configure Ansible on Windows
+Installing the Bare Metal Cloud Ansible module
+This Ansible collection contains the server module which requires the Python requests HTTP library to work properly. If you don't have it installed on your machine already, run this command to install it:
+
+pip install requests
+Now install the Ansible collection by running:
+
+ansible-galaxy collection install phoenixnap.bmc
+You can view the server module documentation with this command:
+
+ansible-doc phoenixnap.bmc.server
+Authentication
+You need to create a configuration file called config.yaml and save it in the user home directory. This file is used to authenticate access to your Bare Metal Cloud resources.
+
+In your home directory, create a folder .pnap and a config.yaml file inside it.
+
+This file needs to contain only two lines of code:
+
+clientId: <enter your client id>
+clientSecret: <enter your client secret>
+To get the values for the clientId and clientSecret, follow these steps:
+
+Log in to the Bare Metal Cloud portal.
+On the left side menu, click on API Credentials.
+Click the Create Credentials button.
+Fill in the Name and Description fields, select the permissions scope and click Create.
+In the table, click on Actions and select View Credentials from the dropdown.
+Copy the values from the Client ID and Client Secret fields into your config.yaml file.
+Example Ansible Playbooks for Bare Metal Cloud
+Ansible Playbooks allow you to interact with your Bare Metal Cloud resources. You can create and delete servers as well as perform power actions with simple code instructions.
+
+This example shows you how to deploy a Bare Metal Cloud server and delete it with Ansible Playbooks.
+
+First, create a YAML file playbook_name.yml. The name part of the filename should contain the action you want to perform. To create a server, the filename can be playbook_create.yml.
+
+Once you've created the file, open it and paste this code:
+
+- name: Create new servers for account
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ~/.pnap/config.yaml
+  collections:
+    - phoenixnap.bmc
+  tasks:
+  - server:
+      client_id: "{{clientId}}"
+      client_secret: "{{clientSecret}}"
+      hostnames: [my-server-red]
+      location: PHX
+      os: ubuntu/bionic
+      type: s1.c1.medium
+      state: present
+      ssh_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+To delete that same server, create a file called playbook_deprovision.yml and paste this code:
+
+- name: reset servers
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ~/.pnap/config.yaml
+  collections:
+    - phoenixnap.bmc
+  tasks:
+  - server:
+      client_id: "{{clientId}}"
+      client_secret: "{{clientSecret}}"
+      hostnames: [my-server-red]
+      state: absent
+Pay attention to the state item. This is where you tell Ansible which action you would like to perform. Here's a list of available options:
+
+present: creates the server
+absent: deletes the server
+power-off: turns off the power supply to the machine
+power-on: turns on the power supply to the machine
+rebooted: restarts the server
+reset: formats the server
+shutdown: works on the operating system
+For more examples, check out this helpful tutorial: Bare Metal Cloud Playbook Examples
+
+Bare Metal Cloud community
+Become part of the Bare Metal Cloud community to get updates on new features, help us improve the platform, and engage with developers and other users.
+
+Follow @phoenixNAP on Twitter
+Join the official Slack channel
+Sign up for our Developers Monthly newsletter
+Resources
+Product page
+Instance pricing
+YouTube tutorials
+Developers Portal
+Knowledge Base
+Blog
+Documentation
+Ansible Galaxy - phoenixNAP
+API documentation
+Contact phoenixNAP
+Get in touch with us if you have questions or need help with Bare Metal Cloud.
